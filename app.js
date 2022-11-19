@@ -87,6 +87,11 @@ app.get('/download/:id', async (req, res) => {
   return res.download(`/uploads/${req.params.id}`)
 })
 
+app.get('/download/:id', async (req, res) => {
+  const neededFile = await res.download(`${__dirname}/uploads/${req.params.id}`)
+  return neededFile
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
