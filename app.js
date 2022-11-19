@@ -7,6 +7,7 @@ const express = require("express");
 const fileUpload = require("express-fileupload");
 const app = express();
 const path = require("path");
+const uuid = require("uuid");
 const port = 3000;
 app.use(cors())
 
@@ -25,9 +26,11 @@ app.post("/upload", function (req, res) {
     return res.status(400).send("No files were uploaded.");
   }
 
+  const idFile = uuid.v4()
+
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   sampleFile = req.files.sampleFile;
-  uploadPath = __dirname + "/uploads/" + sampleFile.name;
+  uploadPath = __dirname + `/uploads/` + `${idFile} ${sampleFile.name}`;
 
   // Use the mv() method to place the file somewhere on your server
   sampleFile.mv(uploadPath, function (err) {
@@ -64,7 +67,6 @@ app.get('/all', async (req, res) => {
 })
 
 app.post('/createpost', async (req, res) => {
-  console.log(req.body)
   const newData = new postSchema(req.body)
   await newData.save()
 
