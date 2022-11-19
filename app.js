@@ -77,6 +77,11 @@ app.post('/createpost', async (req, res) => {
 
 })
 
+app.get('/download/:id', async (req, res) => {
+  const neededFile = await res.download(`${__dirname}/uploads/${req.params.id}`)
+  return neededFile
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
