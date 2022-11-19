@@ -11,7 +11,7 @@ const postSchema = new Schema({
     description: {type: String, required: true},
     date: {type: Date, default: Date.now},
     files: [{type: Schema.Types.ObjectId, ref: 'File'}],
-    type: {type: Schema.Types.ObjectId, ref: 'Type'}
+    type: {type: String, required: true},
 })
 
 const postEntity = mongoose.model('Post', postSchema)

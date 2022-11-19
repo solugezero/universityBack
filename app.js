@@ -1,12 +1,14 @@
 const postSchema = require('./schemas/post.schema')
 const typeSchema = require('./schemas/type.schema')
 const fileSchema = require('./schemas/file.schema')
+const cors = require('cors')
 const mongoose = require('mongoose')
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const app = express();
 const path = require("path");
 const port = 3000;
+app.use(cors())
 
 // default options
 app.use(fileUpload());
@@ -57,8 +59,16 @@ startDataBase();
 // test();
 
 app.get('/all', async (req, res) => {
-  const find = await postSchema.find().limit(2)
+  const find = await postSchema.find().limit(30)
   return res.json(find);
+})
+
+app.post('/createpost', async (req, res) => {
+  console.log(req.body)
+  const newData = new postSchema(req.body)
+  await newData.save()
+
+  // return res.status(200).send('123')
 })
 
 app.listen(port, () => {
