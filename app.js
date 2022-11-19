@@ -50,9 +50,9 @@ app.get('/all', async (req, res) => {
 })
 
 app.get('/all/:type', async (req, res) => {
-  const {type} = req.params
-  const findAllType = await postSchema.find({type}).limit(30)
-  return res.json(...findAllType);
+  const neededType = req.params.type
+  const findAllType = await postSchema.find({type: neededType}).limit(30)
+  return res.json(findAllType);
 })
 
 app.post('/post', async (req, res) => {
@@ -81,10 +81,6 @@ app.post('/post', async (req, res) => {
   newFileData['fileid'] = idFile
   const newData = new postSchema(newFileData)
   await newData.save()
-})
-
-app.get('/download/:id', async (req, res) => {
-  return res.download(`/uploads/${req.params.id}`)
 })
 
 app.get('/download/:id', async (req, res) => {
