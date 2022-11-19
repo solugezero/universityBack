@@ -19,25 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/upload", function (req, res) {
-  let sampleFile;
-  let uploadPath;
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send("No files were uploaded.");
-  }
-
-  const idFile = uuid.v4()
-
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  sampleFile = req.files.sampleFile;
-  uploadPath = __dirname + `/uploads/` + `${idFile} ${sampleFile.name}`;
-
-  // Use the mv() method to place the file somewhere on your server
-  sampleFile.mv(uploadPath, function (err) {
-    if (err) return res.status(500).send(err);
-
-    res.send("File uploaded!");
-  });
 });
 
 const startDataBase = async () => {
@@ -67,10 +49,32 @@ app.get('/all', async (req, res) => {
 })
 
 app.post('/createpost', async (req, res) => {
-  const newData = new postSchema(req.body)
+  let sampleFile;
+  let uploadPath;
+
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send("No files were uploaded.");
+  }
+
+  const idFile = uuid.v4()
+
+  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+  sampleFile = req.files.filedata;
+  const ext = sampleFile.name.split('.').reverse()[0]
+  uploadPath = __dirname + `/uploads/` + `${idFile}.${ext}`;
+
+  // Use the mv() method to place the file somewhere on your server
+  await sampleFile.mv(uploadPath, function (err) {
+    if (err) return res.status(500).send(err);
+
+    res.send("File uploaded!");
+  });
+  let newFileData = req.body
+  // console.log(req.body)
+  newFileData['fileid'] = idFile
+  const newData = new postSchema(newFileData)
   await newData.save()
 
-  // return res.status(200).send('123')
 })
 
 app.listen(port, () => {

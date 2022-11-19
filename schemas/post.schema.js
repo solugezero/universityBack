@@ -10,7 +10,8 @@ const postSchema = new Schema({
     course: {type: String, required: true},
     description: {type: String, required: true},
     date: {type: Date, default: Date.now},
-    files: [{type: Schema.Types.ObjectId, ref: 'File'}],
+    filename: {type: String},
+    fileid: {type: String},
     type: {type: String, required: true},
 })
 
