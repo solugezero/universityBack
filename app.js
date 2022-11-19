@@ -7,6 +7,7 @@ const express = require("express");
 const fileUpload = require("express-fileupload");
 const app = express();
 const path = require("path");
+const fs = require("fs");
 const uuid = require("uuid");
 const port = 3000;
 app.use(cors())
@@ -44,11 +45,17 @@ startDataBase();
 // test();
 
 app.get('/all', async (req, res) => {
-  const find = await postSchema.find().limit(30)
-  return res.json(find);
+  const findAll = await postSchema.find().limit(30)
+  return res.json(findAll);
 })
 
-app.post('/createpost', async (req, res) => {
+app.get('/all/:type', async (req, res) => {
+  const {type} = req.params
+  const findAllType = await postSchema.find({type}).limit(30)
+  return res.json(...findAllType);
+})
+
+app.post('/post', async (req, res) => {
   let sampleFile;
   let uploadPath;
 
@@ -74,7 +81,10 @@ app.post('/createpost', async (req, res) => {
   newFileData['fileid'] = idFile
   const newData = new postSchema(newFileData)
   await newData.save()
+})
 
+app.get('/download/:id', async (req, res) => {
+  return res.download(`/uploads/${req.params.id}`)
 })
 
 app.listen(port, () => {
