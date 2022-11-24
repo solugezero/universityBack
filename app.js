@@ -1,8 +1,8 @@
-const postSchema = require('./schemas/post.schema')
-const typeSchema = require('./schemas/type.schema')
-const fileSchema = require('./schemas/file.schema')
-const cors = require('cors')
-const mongoose = require('mongoose')
+const postSchema = require("./schemas/post.schema");
+const typeSchema = require("./schemas/type.schema");
+const fileSchema = require("./schemas/file.schema");
+const cors = require("cors");
+const mongoose = require("mongoose");
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const app = express();
@@ -10,7 +10,7 @@ const path = require("path");
 const fs = require("fs");
 const uuid = require("uuid");
 const port = 3000;
-app.use(cors())
+app.use(cors());
 
 // default options
 app.use(fileUpload());
@@ -19,21 +19,19 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/index.html"));
 });
 
-app.post("/upload", function (req, res) {
-
-});
+app.post("/upload", function (req, res) {});
 
 const startDataBase = async () => {
   try {
-    await mongoose.connect('mongodb+srv://solugezero:ps2021742@cluster0.uvz94yn.mongodb.net/?retryWrites=true&w=majority', {
+    await mongoose.connect("mongodb+srv://solugezero:ps2021742@cluster0.uvz94yn.mongodb.net/?retryWrites=true&w=majority", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("Connected to mongo")
+    console.log("Connected to mongo");
   } catch (err) {
     console.log(err);
   }
-}
+};
 startDataBase();
 
 // const test = async () => {
@@ -44,18 +42,18 @@ startDataBase();
 //
 // test();
 
-app.get('/all', async (req, res) => {
-  const findAll = await postSchema.find().limit(30)
+app.get("/all", async (req, res) => {
+  const findAll = await postSchema.find().limit(30);
   return res.json(findAll);
-})
+});
 
-app.get('/all/:type', async (req, res) => {
-  const neededType = req.params.type
-  const findAllType = await postSchema.find({type: neededType}).limit(30)
+app.get("/all/:type", async (req, res) => {
+  const neededType = req.params.type;
+  const findAllType = await postSchema.find({ type: neededType }).limit(30);
   return res.json(findAllType);
-})
+});
 
-app.post('/post', async (req, res) => {
+app.post("/createpost", async (req, res) => {
   let sampleFile;
   let uploadPath;
 
@@ -63,11 +61,11 @@ app.post('/post', async (req, res) => {
     return res.status(400).send("No files were uploaded.");
   }
 
-  const idFile = uuid.v4()
+  const idFile = uuid.v4();
 
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   sampleFile = req.files.filedata;
-  const ext = sampleFile.name.split('.').reverse()[0]
+  const ext = sampleFile.name.split(".").reverse()[0];
   uploadPath = __dirname + `/uploads/` + `${idFile}.${ext}`;
 
   // Use the mv() method to place the file somewhere on your server
@@ -76,21 +74,18 @@ app.post('/post', async (req, res) => {
 
     res.send("File uploaded!");
   });
-  let newFileData = req.body
+  let newFileData = req.body;
   // console.log(req.body)
-  newFileData['fileid'] = idFile
-  const newData = new postSchema(newFileData)
-  await newData.save()
-})
+  newFileData["fileid"] = idFile;
+  const newData = new postSchema(newFileData);
+  await newData.save();
+});
 
-app.get('/download/:id', async (req, res) => {
-  const neededFile = await res.download(`${__dirname}/uploads/${req.params.id}`)
-  return neededFile
-})
+app.get("/download/:id", async (req, res) => {
+  const neededFile = await res.download(`${__dirname}/uploads/${req.params.id}`);
+  return neededFile;
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-
-
-
